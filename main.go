@@ -1,6 +1,7 @@
 package main
 
 import "github.com/spf13/cobra"
+import "github.com/bxcodec/gclean/subcommands"
 
 var RootCmd = &cobra.Command{
 	Use:   "gclean",
@@ -22,4 +23,6 @@ func main() {
 
 func addCommands() {
 
+	sub := &subcommands.Subs{}
+	sub.AddGenerate(RootCmd)
 }
