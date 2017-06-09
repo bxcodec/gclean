@@ -1,6 +1,7 @@
 package subcommands
 import "github.com/spf13/cobra"
 import "fmt"
+import "strings"
 
 var cmdDemo = &cobra.Command{
 	Use:   "generate",
