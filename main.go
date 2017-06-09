@@ -22,5 +22,5 @@ func main() {
 }
 
 func addCommands() {
-	RootCmd.AddCommand(subcommands.cmdDemo)
+	subcommands.AddGenerate(RootCmd)
 }
