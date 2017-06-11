@@ -4,3 +4,7 @@ import:
   subpackages:
   - cobra
 - package: github.com/spf13/pflag
+- package: github.com/Masterminds/sprig
+  version: 2.12.0
+- package: github.com/Masterminds/semver
+  version: v1.3.0
