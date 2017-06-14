@@ -2,16 +2,16 @@ package repository
 
 import (
  {{- range $key, $val := .Imports}}
-    {{$key}}  "{{$val}}"
+    {{$key}}  "{{$val.Path}}"
  {{- end}}
 )
 
-{{$pkgIm := index .ImportsShort "models" }}
+{{$pkgIm := index .Imports "models" }}
 
-{{$Name := cat "*" $pkgIm "." .ModelName  }}
+{{$Name := cat "*" $pkgIm.Alias "." .ModelName  }}
 {{$modelName :=$Name| nospace}}
 type {{.ModelName}}Repository interface{
-  Fetch({{.FetchParams}}) ([]{{$modelName}} ,error)
+  Fetch(cursor string , num int64) ([]{{$modelName}} ,error)
   Get(Id int)({{$modelName}},error)
   Update({{$modelName}}) (error)
   Delete(id int)(error)

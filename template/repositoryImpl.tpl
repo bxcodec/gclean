@@ -2,10 +2,12 @@ package {{.ModelName | lower}}
 
 import (
  {{- range $key, $val := .Imports}}
-    {{$key}}  "{{$val}}"
+    {{$key}}  "{{$val.Path}}"
  {{- end}}
 )
-{{$Name := cat "*" .PackageShort "." .ModelName  }}
+{{$pkgIm := index .Imports "models" }}
+
+{{$Name := cat "*" $pkgIm.Alias "." .ModelName  }}
 {{$modelName :=$Name| nospace}}
 
 
@@ -13,8 +15,9 @@ import (
 {{$repoStruct:= $rS|nospace | lower}}
 
 
+{{$sqlIm := index .Imports "sql" }}
 type {{$repoStruct}} struct {
-  Conn *{{index .ImportsShort "sql" }}.DB
+  Conn *{{$sqlIm.Alias}}.DB
 }
 
 
@@ -44,7 +47,7 @@ func (h {{$repoStruct}}) fetch(query string, args ...interface{}) ([]{{$modelNam
 	return result, nil
 }
 
-func (h {{$repoStruct}} )  Fetch({{.FetchParams}}) ([]{{$modelName}} ,error){
+func (h {{$repoStruct}} )  Fetch(cursor string , num int64) ([]{{$modelName}} ,error){
   query := `SELECT {{ range $att := .Attributes }}
                 {{ $att.Name | snakecase}},
                 {{- end }}
@@ -67,8 +70,9 @@ func (h {{$repoStruct}} )  Delete(id int)(error){
 }
 
 
+{{$repoIm := index .Imports "repository" }}
 
-func New{{.Type | title }}{{ .ModelName }}Repository(c *{{index .ImportsShort "sql" }}.DB) {{index .ImportsShort "repository"}}.{{.ModelName}}Repository {
+func New{{.Type | title }}{{ .ModelName }}Repository(c *{{$sqlIm.Alias}}.DB) {{$repoIm.Alias}}.{{.ModelName}}Repository {
   repo:=&{{$repoStruct}}{
     Conn:c,
   }

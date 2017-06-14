@@ -10,11 +10,13 @@ import (
 )
 
 type RepoGenerator struct {
-	PackageShort string
-	ModelName    string
-	FetchParams  string
-	Imports      map[string]string
-	ImportsShort map[string]string
+	ModelName string
+	Imports   map[string]*Import
+}
+
+type Import struct {
+	Alias string
+	Path  string
 }
 
 func (s *Subs) generateRepository() {
@@ -31,20 +33,15 @@ func (s *Subs) generateRepository() {
 	}
 
 	k := 1
-
-	mapImport := make(map[string]string)
-	mapImport["models"] = "github.com/bxcodec/gclean/models"
-	mapImport["time"] = "time"
-	mapImportShort := make(map[string]string)
-	mapImportShort["models"] = "models"
-	mapImportShort["time"] = "time"
+	t := &Import{Alias: "time", Path: "time"}
+	m := &Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
+	mapImport := make(map[string]*Import)
+	mapImport["models"] = m
+	mapImport["time"] = t
 
 	dataSend := &RepoGenerator{
-		PackageShort: "models",
-		ModelName:    "Article",
-		FetchParams:  "cursor string , num int64",
-		Imports:      mapImport,
-		ImportsShort: mapImportShort,
+		ModelName: "Article",
+		Imports:   mapImport,
 	}
 	f, err := os.Create(pathP + "sample" + strconv.Itoa(k) + ".go")
 	if err != nil {

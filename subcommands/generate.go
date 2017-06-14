@@ -42,6 +42,7 @@ func (s *Subs) generate(cmd *cobra.Command, args []string) {
 	s.generateRepository()
 	s.generateRepositoryImpl("mysql", "article")
 	s.generateUsecase("article")
+	s.generateDelivery()
 
 }
 

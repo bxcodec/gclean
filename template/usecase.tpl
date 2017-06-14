@@ -2,23 +2,26 @@ package {{.ModelName | lower}}
 
 import (
  {{- range $key, $val := .Imports}}
-    {{$key}}  "{{$val}}"
- {{- end}}
+    {{$key}}  "{{$val.Path}}"
+ {{- end }}
 )
 
-{{$Name := cat "*" .PackageShort "." .ModelName  }}
-{{$modelName :=$Name| nospace}}
+{{- $pkgIm := index .Imports "models" }}
+
+
+{{- $Name := cat "*" $pkgIm.Alias "." .ModelName  }}
+{{- $modelName :=$Name| nospace}}
 
 
 type {{.ModelName}}Usecase interface {
 	Fetch(cursor string, num int64) ([]{{$modelName}}, string, error)
 }
 
-{{$rS := cat .ModelName "Usecase" }}
-{{$repoStruct:= $rS|nospace | lower}}
+{{- $rS := cat .ModelName "Usecase" }}
+{{- $repoStruct:= $rS|nospace | lower}}
 
 type {{$repoStruct}} struct {
-	articleRepos repository.{{.ModelName}}Repository
+	{{.ModelName | lower}}Repos repository.{{.ModelName}}Repository
 }
 
 func (a *{{$repoStruct}}) Fetch(cursor string, num int64) ([]{{$modelName}}, string, error) {
@@ -26,7 +29,7 @@ func (a *{{$repoStruct}}) Fetch(cursor string, num int64) ([]{{$modelName}}, str
 		num = 10
 	}
 
-	listArticle, err := a.articleRepos.Fetch(cursor, num)
+	listArticle, err := a.{{.ModelName | lower}}Repos.Fetch(cursor, num)
 	if err != nil {
 		return nil, "", err
 	}

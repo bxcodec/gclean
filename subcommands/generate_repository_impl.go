@@ -10,13 +10,10 @@ import (
 )
 
 type RepoImpl struct {
-	Type         string
-	PackageShort string
-	ModelName    string
-	FetchParams  string
-	Imports      map[string]string
-	ImportsShort map[string]string
-	Attributes   []*Attribute
+	Type       string
+	ModelName  string
+	Imports    map[string]*Import
+	Attributes []*Attribute
 }
 
 func (s *Subs) generateRepositoryImpl(repoType string, modelName string) {
@@ -34,16 +31,16 @@ func (s *Subs) generateRepositoryImpl(repoType string, modelName string) {
 
 	k := 1
 
-	mapImport := make(map[string]string)
-	mapImport["models"] = "github.com/bxcodec/gclean/models"
-	mapImport["time"] = "time"
-	mapImport["sql"] = "database/sql"
-	mapImport["repository"] = "github.com/bxcodec/gclean/repository"
+	mapImport := make(map[string]*Import)
 
-	mapImportShort := make(map[string]string)
-	mapImportShort["models"] = "github.com/bxcodec/gclean/models"
-	mapImportShort["sql"] = "sql"
-	mapImportShort["repository"] = "repository"
+	m := &Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
+	t := &Import{Alias: "time", Path: "time"}
+	ss := &Import{Alias: "sql", Path: "database/sql"}
+	r := &Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
+	mapImport["models"] = m
+	mapImport["time"] = t
+	mapImport["sql"] = ss
+	mapImport["repository"] = r
 
 	id := &Attribute{
 		Name: "ID",
@@ -59,13 +56,10 @@ func (s *Subs) generateRepositoryImpl(repoType string, modelName string) {
 	}
 
 	dataSend := &RepoImpl{
-		Type:         repoType,
-		PackageShort: "models",
-		ModelName:    "Article",
-		FetchParams:  "cursor string , num int64",
-		Imports:      mapImport,
-		ImportsShort: mapImportShort,
-		Attributes:   []*Attribute{id, title, content},
+		Type:       repoType,
+		ModelName:  "Article",
+		Imports:    mapImport,
+		Attributes: []*Attribute{id, title, content},
 	}
 	f, err := os.Create(pathP + "sample" + strconv.Itoa(k) + ".go")
 	if err != nil {
