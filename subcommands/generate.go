@@ -37,7 +37,10 @@ func (s *Subs) generate(cmd *cobra.Command, args []string) {
 
 	for k, v := range dataList {
 		s.generateModels(v, k)
+
 	}
+	s.generateRepository()
+	s.generateRepositoryImpl("mysql", "article")
 
 }
 

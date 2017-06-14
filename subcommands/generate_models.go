@@ -25,8 +25,6 @@ type Attribute struct {
 
 func (s *Subs) generateModels(dataSend *ModelGenerator, k int) {
 
-	var err error
-
 	temp, err := template.New("").Funcs(sprig.TxtFuncMap()).ParseFiles("template/models.tpl")
 
 	if err != nil {

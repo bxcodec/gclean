@@ -9,23 +9,25 @@ import (
 	"github.com/Masterminds/sprig"
 )
 
-type RepoGenerator struct {
+type RepoImpl struct {
+	Type         string
 	PackageShort string
 	ModelName    string
 	FetchParams  string
 	Imports      map[string]string
 	ImportsShort map[string]string
+	Attributes   []*Attribute
 }
 
-func (s *Subs) generateRepository() {
-	temp, err := template.New("").Funcs(sprig.TxtFuncMap()).ParseFiles("template/repositoryInterface.tpl")
+func (s *Subs) generateRepositoryImpl(repoType string, modelName string) {
+	temp, err := template.New("").Funcs(sprig.TxtFuncMap()).ParseFiles("template/repositoryImpl.tpl")
 
 	if err != nil {
 		fmt.Println("GALGAL", err)
 		os.Exit(0)
 	}
 
-	pathP := "repository/"
+	pathP := "repository/" + repoType + "/" + modelName + "/"
 	if _, er := os.Stat(pathP); os.IsNotExist(er) {
 		os.MkdirAll(pathP, os.ModePerm)
 	}
@@ -35,16 +37,35 @@ func (s *Subs) generateRepository() {
 	mapImport := make(map[string]string)
 	mapImport["models"] = "github.com/bxcodec/gclean/models"
 	mapImport["time"] = "time"
-	mapImportShort := make(map[string]string)
-	mapImportShort["models"] = "models"
-	mapImportShort["time"] = "time"
+	mapImport["sql"] = "database/sql"
+	mapImport["repository"] = "github.com/bxcodec/gclean/repository"
 
-	dataSend := &RepoGenerator{
+	mapImportShort := make(map[string]string)
+	mapImportShort["models"] = "github.com/bxcodec/gclean/models"
+	mapImportShort["sql"] = "sql"
+	mapImportShort["repository"] = "repository"
+
+	id := &Attribute{
+		Name: "ID",
+		Type: "int64",
+	}
+	title := &Attribute{
+		Name: "Title",
+		Type: "string",
+	}
+	content := &Attribute{
+		Name: "Content",
+		Type: "string",
+	}
+
+	dataSend := &RepoImpl{
+		Type:         repoType,
 		PackageShort: "models",
 		ModelName:    "Article",
 		FetchParams:  "cursor string , num int64",
 		Imports:      mapImport,
 		ImportsShort: mapImportShort,
+		Attributes:   []*Attribute{id, title, content},
 	}
 	f, err := os.Create(pathP + "sample" + strconv.Itoa(k) + ".go")
 	if err != nil {
@@ -52,7 +73,7 @@ func (s *Subs) generateRepository() {
 	}
 
 	defer f.Close()
-	err = temp.ExecuteTemplate(f, "repositoryInterface.tpl", dataSend)
+	err = temp.ExecuteTemplate(f, "repositoryImpl.tpl", dataSend)
 
 	if err != nil {
 		fmt.Println("ERROR ", err)
