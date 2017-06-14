@@ -1,4 +1,4 @@
-package {{.Type}}
+package {{.ModelName | lower}}
 
 import (
  {{- range $key, $val := .Imports}}
@@ -7,6 +7,8 @@ import (
 )
 {{$Name := cat "*" .PackageShort "." .ModelName  }}
 {{$modelName :=$Name| nospace}}
+
+
 {{$rS := cat .Type  .ModelName "Repository" }}
 {{$repoStruct:= $rS|nospace | lower}}
 

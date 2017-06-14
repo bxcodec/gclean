@@ -1,3 +1,7 @@
 # vendor by glide
 /vendor
 main
+/models
+/repository
+/usecase
+/delivery
