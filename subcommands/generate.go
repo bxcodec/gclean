@@ -51,9 +51,10 @@ func (s *Subs) generate(cmd *cobra.Command, args []string) {
 
 		s.fixingImportsRepoImpl(&v)
 		s.generateRepositoryImpl(&v)
+
+		s.fixingImportsUsecase(&v)
+		s.generateUsecaseTmp(&v)
 	}
-	// s.generateRepositoryImpl("mysql", "article")
-	s.generateUsecaseTmp("article")
 	s.generateDelivery()
 
 }
@@ -74,6 +75,18 @@ func (s *Subs) fixingImportsRepoImpl(m *models.DataGenerator) {
 
 	sq := models.Import{Alias: "sql", Path: "database/sql"}
 	mapIp["sql"] = sq
+
+	r := models.Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
+	mapIp["repository"] = r
+
+	m.Imports = mapIp
+
+}
+func (s *Subs) fixingImportsUsecase(m *models.DataGenerator) {
+	mapIp := make(map[string]models.Import)
+
+	model := models.Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
+	mapIp["models"] = model
 
 	r := models.Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
 	mapIp["repository"] = r

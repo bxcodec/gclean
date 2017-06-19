@@ -21,19 +21,6 @@ func (s *Subs) generateRepositoryImpl(dataSend *models.DataGenerator) {
 	if _, er := os.Stat(pathP); os.IsNotExist(er) {
 		os.MkdirAll(pathP, os.ModePerm)
 	}
-	//
-	// k := 1
-
-	// mapImport := make(map[string]models.Import)
-	//
-	// m := models.Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
-	// t := models.Import{Alias: "time", Path: "time"}
-	// ss := models.Import{Alias: "sql", Path: "database/sql"}
-	// r := models.Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
-	// mapImport["models"] = m
-	// mapImport["time"] = t
-	// mapImport["sql"] = ss
-	// mapImport["repository"] = r
 
 	f, err := os.Create(pathP + dataSend.ModelName + "_" + dataSend.Type + ".go")
 	if err != nil {

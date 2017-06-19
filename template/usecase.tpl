@@ -16,12 +16,12 @@ import (
 
 {{- $pkgIm := index .Imports "models" }}
 
-
-{{- $Name := cat "*" $pkgIm.Alias "." .ModelName  }}
+{{ $modelName := .ModelName | camelcase }}
+{{- $Name := cat "*" $pkgIm.Alias "." $modelName  }}
 {{- $model :=$Name| nospace}}
 
 
-type {{.ModelName}}Usecase interface {
+type {{.ModelName | camelcase }}Usecase interface {
 	Fetch(cursor string, num int64) ([]{{$model}}, string, error)
 }
 
@@ -29,7 +29,7 @@ type {{.ModelName}}Usecase interface {
 {{- $repoStruct:= $rS|nospace | lower}}
 
 type {{$repoStruct}} struct {
-	{{.ModelName | lower}}Repos repository.{{.ModelName}}Repository
+	{{.ModelName | lower}}Repos repository.{{.ModelName | camelcase }}Repository
 }
 
 func (a *{{$repoStruct}}) Fetch(cursor string, num int64) ([]{{$model}}, string, error) {
@@ -47,6 +47,6 @@ func (a *{{$repoStruct}}) Fetch(cursor string, num int64) ([]{{$model}}, string,
 	return listArticle, nextCursor, nil
 }
 
-func New{{$repoStruct}}(a repository.{{.ModelName}}Repository) ArticleUsecase {
+func New{{$repoStruct}}(a repository.{{.ModelName | camelcase }}Repository) {{ .ModelName | camelcase }}Usecase {
 	return &{{$repoStruct}}{a}
 }
