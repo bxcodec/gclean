@@ -18,11 +18,11 @@ import (
 
 
 {{- $Name := cat "*" $pkgIm.Alias "." .ModelName  }}
-{{- $modelName :=$Name| nospace}}
+{{- $model :=$Name| nospace}}
 
 
 type {{.ModelName}}Usecase interface {
-	Fetch(cursor string, num int64) ([]{{$modelName}}, string, error)
+	Fetch(cursor string, num int64) ([]{{$model}}, string, error)
 }
 
 {{- $rS := cat .ModelName "Usecase" }}
@@ -32,7 +32,7 @@ type {{$repoStruct}} struct {
 	{{.ModelName | lower}}Repos repository.{{.ModelName}}Repository
 }
 
-func (a *{{$repoStruct}}) Fetch(cursor string, num int64) ([]{{$modelName}}, string, error) {
+func (a *{{$repoStruct}}) Fetch(cursor string, num int64) ([]{{$model}}, string, error) {
 	if num == 0 {
 		num = 10
 	}

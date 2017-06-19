@@ -17,9 +17,9 @@ type HttpHandler struct {
 	E *echo.Echo
 }
 
-{{$modelNameLower := .ModelName | lower }}
+{{$modelLower := .ModelName | lower }}
 
-{{$pkgModel := index .Imports $modelNameLower }}
+{{$pkgModel := index .Imports $modelLower }}
 
 func (h *HttpHandler) Init{{.ModelName}}Handler(u {{$pkgModel.Alias}}.{{.ModelName}}Usecase) *HttpHandler {
 	{{.ModelName | lower }}Handler := &artHandler.{{.ModelName}}Handler{ {{substr 0 1 .ModelName}}Usecase: u}

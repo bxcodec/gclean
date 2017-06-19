@@ -15,11 +15,13 @@ import (
 
 {{- $pkgIm := index .Imports "models" -}}
 
-{{- $Name := cat "*" $pkgIm.Alias "." .ModelName  }}
-{{ $modelName :=$Name| nospace }}
-type {{.ModelName}}Repository interface{
-  Fetch(cursor string , num int64) ([]{{$modelName}} ,error)
-  Get(Id int)({{$modelName}},error)
-  Update({{$modelName}}) (error)
+{{- $modelName := .ModelName | camelcase }}
+{{- $Name := cat "*" $pkgIm.Alias "." $modelName  }}
+{{ $model :=$Name| nospace }}
+
+type {{.ModelName | camelcase }}Repository interface{
+  Fetch(cursor string , num int64) ([]{{$model}} ,error)
+  Get(Id int)({{$model}},error)
+  Update({{$model}}) (error)
   Delete(id int)(error)
 }

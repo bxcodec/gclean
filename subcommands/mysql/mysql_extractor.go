@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/bxcodec/gclean/subcommands/models"
 )
@@ -54,9 +55,15 @@ func (m *MysqlExtractor) FetchSchema(tableName string) ([]*models.ColumnSchema, 
 }
 
 func (m *MysqlExtractor) ExtractModel(schemaList []*models.ColumnSchema) []models.DataGenerator {
+
+	if len(schemaList) <= 0 {
+		panic("Schema is Empty. Check Your DB Connection")
+	}
 	last := schemaList[0].TableName
 
 	var model models.DataGenerator
+	model.Type = "mysql"
+	model.TimeStamp = time.Now()
 	model.ModelName = last
 	var modelList []models.DataGenerator
 	var attrList []models.Attribute

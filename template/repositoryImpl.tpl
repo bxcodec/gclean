@@ -15,8 +15,10 @@ import (
 
 {{- $pkgIm := index .Imports "models" -}}
 
-{{- $Name := cat "*" $pkgIm.Alias "." .ModelName  }}
-{{- $modelName :=$Name| nospace}}
+{{- $modelName :=  .ModelName  | camelcase  }}
+
+{{- $Name := cat "*" $pkgIm.Alias "." $modelName  }}
+{{- $model :=$Name| nospace}}
 
 
 {{- $rS := cat .Type  .ModelName "Repository" }}
@@ -24,12 +26,12 @@ import (
 
 
 {{ $sqlIm := index .Imports "sql" -}}
-type {{$repoStruct}} struct {
+type {{$repoStruct  }} struct {
   Conn *{{$sqlIm.Alias}}.DB
 }
 
 
-func (h {{$repoStruct}}) fetch(query string, args ...interface{}) ([]{{$modelName}} ,error){
+func (h {{$repoStruct}}) fetch(query string, args ...interface{}) ([]{{$model}} ,error){
 
 	rows, err := h.Conn.Query(query, args...)
 
@@ -37,9 +39,9 @@ func (h {{$repoStruct}}) fetch(query string, args ...interface{}) ([]{{$modelNam
 		return nil, err
 	}
 	defer rows.Close()
-	var result   []{{$modelName}}
+	var result   []{{$model}}
 	for rows.Next() {
-		var  t {{$modelName}}
+		var  t {{$model}}
 		err = rows.Scan(
     {{ range  $att :=  .Attributes -}}
   	 &t.{{  $att.Name | camelcase }},
@@ -55,7 +57,7 @@ func (h {{$repoStruct}}) fetch(query string, args ...interface{}) ([]{{$modelNam
 	return result, nil
 }
 
-func (h {{$repoStruct}} )  Fetch(cursor string , num int64) ([]{{$modelName}} ,error){
+func (h {{$repoStruct}} )  Fetch(cursor string , num int64) ([]{{$model}} ,error){
   query := `SELECT {{ range $att := .Attributes }}
                 {{ $att.Name | snakecase}},
                 {{- end }}
@@ -65,11 +67,11 @@ func (h {{$repoStruct}} )  Fetch(cursor string , num int64) ([]{{$modelName}} ,e
 	return h.fetch(query, cursor, num)
 }
 
-func (h {{$repoStruct}} )  Get(Id int)({{$modelName}},error){
+func (h {{$repoStruct}} )  Get(Id int)({{$model}},error){
   return nil,nil
 }
 
-func (h {{$repoStruct}} )  Update({{$modelName}}) (error){
+func (h {{$repoStruct}} )  Update({{$model}}) (error){
   return nil
 }
 
