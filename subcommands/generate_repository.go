@@ -9,16 +9,6 @@ import (
 	"github.com/Masterminds/sprig"
 )
 
-type RepoGenerator struct {
-	ModelName string
-	Imports   map[string]*Import
-}
-
-type Import struct {
-	Alias string
-	Path  string
-}
-
 func (s *Subs) generateRepository() {
 	temp, err := template.New("").Funcs(sprig.TxtFuncMap()).ParseFiles("template/repositoryInterface.tpl")
 
@@ -38,7 +28,7 @@ func (s *Subs) generateRepository() {
 	mapImport["models"] = m
 	mapImport["time"] = t
 
-	dataSend := &RepoGenerator{
+	dataSend := &DataGenerator{
 		ModelName: "Article",
 		Imports:   mapImport,
 	}

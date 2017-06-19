@@ -11,7 +11,7 @@ type Subs struct {
 }
 
 func (s *Subs) generate(cmd *cobra.Command, args []string) {
-	dataList := make([]*ModelGenerator, 0)
+	dataList := make([]*DataGenerator, 0)
 
 	id := &Attribute{
 		Name: "ID",
@@ -26,7 +26,7 @@ func (s *Subs) generate(cmd *cobra.Command, args []string) {
 		Type: "string",
 	}
 
-	dataList = append(dataList, &ModelGenerator{
+	dataList = append(dataList, &DataGenerator{
 		ModelName:  "Article",
 		Attributes: []Attribute{*id, *title, *content},
 		TimeStamp:  time.Now(),
@@ -46,7 +46,7 @@ func (s *Subs) generate(cmd *cobra.Command, args []string) {
 	}
 	s.generateRepository()
 	s.generateRepositoryImpl("mysql", "article")
-	s.generateUsecase("article")
+	s.generateUsecaseTmp("article")
 	s.generateDelivery()
 
 }

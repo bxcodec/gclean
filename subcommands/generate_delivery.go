@@ -8,11 +8,6 @@ import (
 	"github.com/Masterminds/sprig"
 )
 
-type DeliveryGenerator struct {
-	ModelName string
-	Imports   map[string]*Import
-}
-
 func (s *Subs) generateDelivery() {
 	temp, err := template.New("").Funcs(sprig.TxtFuncMap()).ParseFiles("template/deliveryHttp.tpl")
 
@@ -39,7 +34,7 @@ func (s *Subs) generateDelivery() {
 	mapImport["repository"] = r
 	mapImport["article"] = a
 
-	dataSend := &DeliveryGenerator{
+	dataSend := &DataGenerator{
 		ModelName: "Article",
 		Imports:   mapImport,
 	}

@@ -9,13 +9,7 @@ import (
 	"github.com/Masterminds/sprig"
 )
 
-type Usecase struct {
-	ModelName  string
-	Imports    map[string]*Import
-	Attributes []*Attribute
-}
-
-func (s *Subs) generateUsecase(modelName string) {
+func (s *Subs) generateUsecaseTmp(modelName string) {
 	temp, err := template.New("").Funcs(sprig.TxtFuncMap()).ParseFiles("template/usecase.tpl")
 
 	if err != nil {
@@ -54,10 +48,10 @@ func (s *Subs) generateUsecase(modelName string) {
 		Type: "string",
 	}
 
-	dataSend := &Usecase{
+	dataSend := &DataGenerator{
 		ModelName:  "Article",
 		Imports:    mapImport,
-		Attributes: []*Attribute{id, title, content},
+		Attributes: []Attribute{*id, *title, *content},
 	}
 	f, err := os.Create(pathP + "sample" + strconv.Itoa(k) + ".go")
 	if err != nil {

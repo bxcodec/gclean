@@ -9,13 +9,6 @@ import (
 	"github.com/Masterminds/sprig"
 )
 
-type RepoImpl struct {
-	Type       string
-	ModelName  string
-	Imports    map[string]*Import
-	Attributes []*Attribute
-}
-
 func (s *Subs) generateRepositoryImpl(repoType string, modelName string) {
 	temp, err := template.New("").Funcs(sprig.TxtFuncMap()).ParseFiles("template/repositoryImpl.tpl")
 
@@ -55,11 +48,11 @@ func (s *Subs) generateRepositoryImpl(repoType string, modelName string) {
 		Type: "string",
 	}
 
-	dataSend := &RepoImpl{
+	dataSend := &DataGenerator{
 		Type:       repoType,
 		ModelName:  "Article",
 		Imports:    mapImport,
-		Attributes: []*Attribute{id, title, content},
+		Attributes: []Attribute{*id, *title, *content},
 	}
 	f, err := os.Create(pathP + "sample" + strconv.Itoa(k) + ".go")
 	if err != nil {

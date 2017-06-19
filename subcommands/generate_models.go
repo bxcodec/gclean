@@ -13,11 +13,17 @@ import (
 	"time"
 )
 
-type ModelGenerator struct {
+type DataGenerator struct {
 	TimeStamp  time.Time
+	Type       string
 	ModelName  string
 	Attributes []Attribute
 	Imports    map[string]*Import
+}
+
+type Import struct {
+	Alias string
+	Path  string
 }
 
 type Attribute struct {
@@ -92,12 +98,12 @@ func FetchSchema(tableName string) ([]*ColumnSchema, error) {
 
 }
 
-func ExtractModel(schemaList []*ColumnSchema) []ModelGenerator {
+func ExtractModel(schemaList []*ColumnSchema) []DataGenerator {
 	last := schemaList[0].TableName
 
-	var model ModelGenerator
+	var model DataGenerator
 	model.ModelName = last
-	var modelList []ModelGenerator
+	var modelList []DataGenerator
 	var attrList []Attribute
 	imports := make(map[string]*Import)
 	for i, schema := range schemaList {
@@ -158,7 +164,7 @@ func ExtractModel(schemaList []*ColumnSchema) []ModelGenerator {
 	return modelList
 }
 
-func (s *Subs) generateModels(dataSend *ModelGenerator) {
+func (s *Subs) generateModels(dataSend *DataGenerator) {
 
 	temp, err := template.New("").Funcs(sprig.TxtFuncMap()).ParseFiles("template/models.tpl")
 
