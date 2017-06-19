@@ -1,10 +1,18 @@
 package {{.ModelName | lower}}
 
+{{ if   (gt (len .Imports) 0) }}
 import (
- {{- range $key, $val := .Imports}}
-    {{$key}}  "{{$val.Path}}"
- {{- end }}
+{{- range $key, $val := .Imports}}
+		{{- if not (eq ($val.Alias) ($val.Path) ) }}
+	{{$val.Alias}}  "{{$val.Path}}"
+		{{- else }}
+  "{{$val.Path}}"
+		{{- end }}
+{{- end}}
 )
+{{ end }}
+
+
 
 {{- $pkgIm := index .Imports "models" }}
 

@@ -8,3 +8,5 @@ import:
   version: 2.12.0
 - package: github.com/Masterminds/semver
   version: v1.3.0
+- package: github.com/go-sql-driver/mysql
+  version: v1.3

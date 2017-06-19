@@ -1,8 +1,10 @@
-hash: 9ba6735246b2a77320d84e1b23241fe57e23d3174f8eef3f55978654c0b793c3
-updated: 2017-06-11T20:47:05.588245697+07:00
+hash: 5d133c8066cbf9fdd52839bcf75d049f3a09ac5b1d2d73b5705a6cc7a356860c
+updated: 2017-06-16T17:06:30.419566344+07:00
 imports:
 - name: github.com/aokoli/goutils
   version: 3391d3790d23d03408670993e957e8f408993c34
+- name: github.com/go-sql-driver/mysql
+  version: a0583e0143b1624142adab07e0e97fe106d99561
 - name: github.com/huandu/xstrings
   version: 3959339b333561bf62a38b424fd41517c2c90f40
 - name: github.com/imdario/mergo
@@ -20,9 +22,9 @@ imports:
   subpackages:
   - cobra
 - name: github.com/spf13/pflag
-  version: 9ff6c6923cfffbcd502984b8e0c80539a94968b7
+  version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: golang.org/x/crypto
-  version: dc137beb6cce2043eb6b5f223ab8bf51c32459f4
+  version: e1a4589e7d3ea14a3352255d04b6f1a418845e5e
   subpackages:
   - pbkdf2
   - scrypt

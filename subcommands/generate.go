@@ -1,7 +1,7 @@
 package subcommands
 
 import (
-	"strconv"
+	"fmt"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -26,17 +26,22 @@ func (s *Subs) generate(cmd *cobra.Command, args []string) {
 		Type: "string",
 	}
 
-	for i := 1; i <= 5; i++ {
+	dataList = append(dataList, &ModelGenerator{
+		ModelName:  "Article",
+		Attributes: []Attribute{*id, *title, *content},
+		TimeStamp:  time.Now(),
+	})
 
-		dataList = append(dataList, &ModelGenerator{
-			ModelName:  "Model" + strconv.Itoa(i),
-			Attributes: []*Attribute{id, title, content},
-			TimeStamp:  time.Now(),
-		})
+	data, err := FetchSchema("article")
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+		// os.Exit(0)
 	}
+	models := ExtractModel(data)
+	for _, v := range models {
 
-	for k, v := range dataList {
-		s.generateModels(v, k)
+		s.generateModels(&v)
 
 	}
 	s.generateRepository()

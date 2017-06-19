@@ -3,7 +3,6 @@ package subcommands
 import (
 	"fmt"
 	"os"
-	"strconv"
 	"text/template"
 
 	"github.com/Masterminds/sprig"
@@ -27,23 +26,24 @@ func (s *Subs) generateDelivery() {
 		os.MkdirAll(pathP, os.ModePerm)
 	}
 
-	k := 1
 	mapImport := make(map[string]*Import)
 
 	m := &Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
 	t := &Import{Alias: "time", Path: "time"}
 	ss := &Import{Alias: "sql", Path: "database/sql"}
 	r := &Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
+	a := &Import{Alias: "articleUcase", Path: "github.com/bxcodec/gclean/delivery/http/article"}
 	mapImport["models"] = m
 	mapImport["time"] = t
 	mapImport["sql"] = ss
 	mapImport["repository"] = r
+	mapImport["article"] = a
 
 	dataSend := &DeliveryGenerator{
 		ModelName: "Article",
 		Imports:   mapImport,
 	}
-	f, err := os.Create(pathP + "sample" + strconv.Itoa(k) + ".go")
+	f, err := os.Create(pathP + "http_deliver.go")
 	if err != nil {
 		fmt.Println("Erorr")
 	}

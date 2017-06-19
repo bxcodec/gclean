@@ -1,21 +1,29 @@
 package {{.ModelName | lower}}
 
+{{ if   (gt (len .Imports) 0) }}
 import (
- {{- range $key, $val := .Imports}}
-    {{$key}}  "{{$val.Path}}"
- {{- end}}
+{{- range $key, $val := .Imports}}
+		{{- if not (eq ($val.Alias) ($val.Path) ) }}
+	{{$val.Alias}}  "{{$val.Path}}"
+		{{- else }}
+  "{{$val.Path}}"
+		{{- end }}
+{{- end}}
 )
-{{$pkgIm := index .Imports "models" }}
-
-{{$Name := cat "*" $pkgIm.Alias "." .ModelName  }}
-{{$modelName :=$Name| nospace}}
+{{ end }}
 
 
-{{$rS := cat .Type  .ModelName "Repository" }}
-{{$repoStruct:= $rS|nospace | lower}}
+{{- $pkgIm := index .Imports "models" -}}
+
+{{- $Name := cat "*" $pkgIm.Alias "." .ModelName  }}
+{{- $modelName :=$Name| nospace}}
 
 
-{{$sqlIm := index .Imports "sql" }}
+{{- $rS := cat .Type  .ModelName "Repository" }}
+{{- $repoStruct:= $rS|nospace | lower}}
+
+
+{{ $sqlIm := index .Imports "sql" -}}
 type {{$repoStruct}} struct {
   Conn *{{$sqlIm.Alias}}.DB
 }

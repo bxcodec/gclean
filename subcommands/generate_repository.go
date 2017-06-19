@@ -3,7 +3,7 @@ package subcommands
 import (
 	"fmt"
 	"os"
-	"strconv"
+	"strings"
 	"text/template"
 
 	"github.com/Masterminds/sprig"
@@ -32,7 +32,6 @@ func (s *Subs) generateRepository() {
 		os.MkdirAll(pathP, os.ModePerm)
 	}
 
-	k := 1
 	t := &Import{Alias: "time", Path: "time"}
 	m := &Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
 	mapImport := make(map[string]*Import)
@@ -43,7 +42,7 @@ func (s *Subs) generateRepository() {
 		ModelName: "Article",
 		Imports:   mapImport,
 	}
-	f, err := os.Create(pathP + "sample" + strconv.Itoa(k) + ".go")
+	f, err := os.Create(pathP + strings.ToLower(dataSend.ModelName) + "_repository.go")
 	if err != nil {
 		fmt.Println("Erorr")
 	}

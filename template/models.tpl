@@ -3,12 +3,20 @@
 // {{ .TimeStamp }}
 
 package models
-{{/*
-{{index $.Attributes   2}}.Type
-	*/}}
 
+{{ if   (gt (len .Imports) 0) }}
+import (
+{{- range $key, $val := .Imports}}
+		{{- if not (eq ($val.Alias) ($val.Path) ) }}
+	{{$val.Alias}}  "{{$val.Path}}"
+		{{- else }}
+  "{{$val.Path}}"
+		{{- end }}
+{{- end}}
+)
+{{ end }}
 type {{.ModelName}} struct {
 	{{ range $i,$att :=  .Attributes -}}
-	 {{  $att.Name | camelcase    }}  {{$att.Type}}  `json:"{{$att.Name | snakecase}}"`
+	 {{  $att.Name | camelcase    }}       {{$att.Type}}  `json:"{{$att.Name | snakecase}}"`
 	{{ end -}}
 }
