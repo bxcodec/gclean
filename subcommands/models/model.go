@@ -13,6 +13,11 @@ type DataGenerator struct {
 	Imports    map[string]Import
 }
 
+type DeliveryGenerator struct {
+	Data    []DataGenerator
+	Imports map[string]Import
+}
+
 type Import struct {
 	Alias string
 	Path  string

@@ -41,21 +41,67 @@ func (s *Subs) generate(cmd *cobra.Command, args []string) {
 		fmt.Println(err)
 		panic(err)
 	}
-	models := mysqlExtractor.ExtractModel(data)
-	for _, v := range models {
+	m := mysqlExtractor.ExtractModel(data)
+	mapImport := make(map[string]models.Import)
+	for i := 0; i < len(m); i++ {
 
-		s.generateModels(&v)
+		s.generateModels(&m[i])
 
-		s.fixingImportsRepo(&v)
-		s.generateRepository(&v)
+		s.fixingImportsRepo(&m[i])
+		s.generateRepository(&m[i])
 
-		s.fixingImportsRepoImpl(&v)
-		s.generateRepositoryImpl(&v)
+		s.fixingImportsRepoImpl(&m[i])
+		s.generateRepositoryImpl(&m[i])
 
-		s.fixingImportsUsecase(&v)
-		s.generateUsecaseTmp(&v)
+		s.fixingImportsUsecase(&m[i])
+		s.generateUsecaseTmp(&m[i])
+
+		m[i] = s.fixingImportDelivery(m[i], mapImport)
+
+		// fmt.Println(" : ", v.Imports)
+
 	}
-	s.generateDelivery()
+
+	dlv := &models.DeliveryGenerator{}
+	dlv.Data = m
+	//
+	// mm := models.Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
+	// t := models.Import{Alias: "time", Path: "time"}
+	// ss := models.Import{Alias: "sql", Path: "database/sql"}
+	// r := models.Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
+	// a := models.Import{Alias: "articleUcase", Path: "github.com/bxcodec/gclean/delivery/http/article"}
+	// mapImport["models"] = mm
+	// mapImport["time"] = t
+	// mapImport["sql"] = ss
+	// mapImport["repository"] = r
+	// mapImport["article"] = a
+	framework := models.Import{Alias: "echo", Path: "github.com/labstack/echo"}
+	mapImport["framework"] = framework
+	delete(mapImport, "models")
+
+	dlv.Imports = mapImport
+	s.generateDelivery(dlv)
+
+}
+
+func (s *Subs) fixingImportDelivery(m models.DataGenerator, mapImport map[string]models.Import) models.DataGenerator {
+
+	aliasModel := m.ModelName + "Ucase"
+	mm := models.Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
+	// t := models.Import{Alias: "time", Path: "time"}
+	// ss := models.Import{Alias: "sql", Path: "database/sql"}
+	// r := models.Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
+	a := models.Import{Alias: aliasModel, Path: "github.com/bxcodec/gclean/usecase/" + m.ModelName}
+	h := models.Import{Alias: m.ModelName + "Handler", Path: "github.com/bxcodec/gclean/delivery/http/" + m.ModelName}
+	mapImport["models"] = mm
+	// mapImport["time"] = t
+	// mapImport["sql"] = ss
+	// mapImport["repository"] = r
+	mapImport[m.ModelName] = a
+	mapImport[m.ModelName+"handler"] = h
+
+	m.Imports = mapImport
+	return m
 
 }
 

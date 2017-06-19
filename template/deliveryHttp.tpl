@@ -12,17 +12,31 @@ import (
 )
 {{ end }}
 
+{{- $framework := index .Imports "framework" -}}
 
 type HttpHandler struct {
-	E *echo.Echo
+	{{- if eq $framework.Alias "echo" }}
+	 E *echo.Echo
+	{{- end }}
 }
 
-{{$modelLower := .ModelName | lower }}
 
-{{$pkgModel := index .Imports $modelLower }}
 
-func (h *HttpHandler) Init{{.ModelName}}Handler(u {{$pkgModel.Alias}}.{{.ModelName}}Usecase) *HttpHandler {
-	{{.ModelName | lower }}Handler := &artHandler.{{.ModelName}}Handler{ {{substr 0 1 .ModelName}}Usecase: u}
-	h.E.GET(`/{{.ModelName | lower}}`, {{.ModelName | lower }}Handler.Fetch)
+{{- range $model := .Data }}
+
+{{- $modelLower := $model.ModelName | lower -}}
+
+{{- $pkgModel := index $model.Imports $modelLower -}}
+{{- $modelCamelCase := $model.ModelName | camelcase -}}
+
+
+
+{{- $handlerPkg := index $model.Imports (lower (nospace ( cat $model.ModelName "handler"))) }}
+
+func (h *HttpHandler) Init{{ $modelCamelCase }}Handler(u {{$pkgModel.Alias}}.{{$model.ModelName}}Usecase) *HttpHandler {
+	{{$model.ModelName | lower }}_H := &{{$handlerPkg.Alias}}.{{$model.ModelName}}Handler{  {{ (initials $modelCamelCase) }}Usecase: u}
+	h.E.GET(`/{{$model.ModelName | lower}}`, {{$model.ModelName | lower }}_H.Fetch)
 	return h
 }
+
+{{- end -}}

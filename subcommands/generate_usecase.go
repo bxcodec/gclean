@@ -22,32 +22,6 @@ func (s *Subs) generateUsecaseTmp(data *models.DataGenerator) {
 		os.MkdirAll(pathP, os.ModePerm)
 	}
 
-	// k := 1
-
-	// mapImport := make(map[string]models.Import)
-
-	// m := models.Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
-	// t := models.Import{Alias: "time", Path: "time"}
-	// ss := models.Import{Alias: "sql", Path: "database/sql"}
-	// r := models.Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
-	// mapImport["models"] = m
-	// mapImport["time"] = t
-	// mapImport["sql"] = ss
-	// mapImport["repository"] = r
-	//
-	// id := &models.Attribute{
-	// 	Name: "ID",
-	// 	Type: "int64",
-	// }
-	// title := &models.Attribute{
-	// 	Name: "Title",
-	// 	Type: "string",
-	// }
-	// content := &models.Attribute{
-	// 	Name: "Content",
-	// 	Type: "string",
-	// }
-
 	f, err := os.Create(pathP + data.ModelName + "_usecase.go")
 	if err != nil {
 		fmt.Println("Erorr")

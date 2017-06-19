@@ -10,7 +10,7 @@ import (
 	"github.com/bxcodec/gclean/subcommands/models"
 )
 
-func (s *Subs) generateDelivery() {
+func (s *Subs) generateDelivery(data *models.DeliveryGenerator) {
 	temp, err := template.New("").Funcs(sprig.TxtFuncMap()).ParseFiles("template/deliveryHttp.tpl")
 
 	if err != nil {
@@ -23,30 +23,13 @@ func (s *Subs) generateDelivery() {
 		os.MkdirAll(pathP, os.ModePerm)
 	}
 
-	mapImport := make(map[string]models.Import)
-
-	m := models.Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
-	t := models.Import{Alias: "time", Path: "time"}
-	ss := models.Import{Alias: "sql", Path: "database/sql"}
-	r := models.Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
-	a := models.Import{Alias: "articleUcase", Path: "github.com/bxcodec/gclean/delivery/http/article"}
-	mapImport["models"] = m
-	mapImport["time"] = t
-	mapImport["sql"] = ss
-	mapImport["repository"] = r
-	mapImport["article"] = a
-
-	dataSend := &models.DataGenerator{
-		ModelName: "Article",
-		Imports:   mapImport,
-	}
 	f, err := os.Create(pathP + "http_deliver.go")
 	if err != nil {
 		fmt.Println("Erorr")
 	}
 
 	defer f.Close()
-	err = temp.ExecuteTemplate(f, "deliveryHttp.tpl", dataSend)
+	err = temp.ExecuteTemplate(f, "deliveryHttp.tpl", data)
 
 	if err != nil {
 		fmt.Println("ERROR ", err)
