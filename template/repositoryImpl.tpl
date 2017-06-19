@@ -44,7 +44,7 @@ func (h {{$repoStruct}}) fetch(query string, args ...interface{}) ([]{{$model}} 
 		var  t {{$model}}
 		err = rows.Scan(
     {{ range  $att :=  .Attributes -}}
-  	 &t.{{  $att.Name | camelcase }},
+  	      &t.{{  $att.Name | camelcase }},
   	{{ end -}}
 		)
 
@@ -82,7 +82,7 @@ func (h {{$repoStruct}} )  Delete(id int)(error){
 
 {{$repoIm := index .Imports "repository" }}
 
-func New{{.Type | title }}{{ .ModelName }}Repository(c *{{$sqlIm.Alias}}.DB) {{$repoIm.Alias}}.{{.ModelName}}Repository {
+func New{{.Type | title }}{{ .ModelName | camelcase }}Repository(c *{{$sqlIm.Alias}}.DB) {{$repoIm.Alias}}.{{.ModelName | camelcase }}Repository {
   repo:=&{{$repoStruct}}{
     Conn:c,
   }

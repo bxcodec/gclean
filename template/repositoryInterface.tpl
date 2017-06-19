@@ -15,9 +15,9 @@ import (
 
 {{- $pkgIm := index .Imports "models" -}}
 
-{{- $modelName := .ModelName | camelcase }}
+{{- $modelName := .ModelName | camelcase -}}
 {{- $Name := cat "*" $pkgIm.Alias "." $modelName  }}
-{{ $model :=$Name| nospace }}
+{{- $model :=$Name| nospace -}}
 
 type {{.ModelName | camelcase }}Repository interface{
   Fetch(cursor string , num int64) ([]{{$model}} ,error)

@@ -15,7 +15,7 @@ import (
 {{- end}}
 )
 {{ end }}
-type {{.ModelName}} struct {
+type {{.ModelName | camelcase}} struct {
 	{{ range $i,$att :=  .Attributes -}}
 	 {{  $att.Name | camelcase    }}       {{$att.Type}}  `json:"{{$att.Name | snakecase}}"`
 	{{ end -}}
