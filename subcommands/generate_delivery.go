@@ -6,6 +6,8 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig"
+
+	"github.com/bxcodec/gclean/subcommands/models"
 )
 
 func (s *Subs) generateDelivery() {
@@ -21,20 +23,20 @@ func (s *Subs) generateDelivery() {
 		os.MkdirAll(pathP, os.ModePerm)
 	}
 
-	mapImport := make(map[string]*Import)
+	mapImport := make(map[string]models.Import)
 
-	m := &Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
-	t := &Import{Alias: "time", Path: "time"}
-	ss := &Import{Alias: "sql", Path: "database/sql"}
-	r := &Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
-	a := &Import{Alias: "articleUcase", Path: "github.com/bxcodec/gclean/delivery/http/article"}
+	m := models.Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
+	t := models.Import{Alias: "time", Path: "time"}
+	ss := models.Import{Alias: "sql", Path: "database/sql"}
+	r := models.Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
+	a := models.Import{Alias: "articleUcase", Path: "github.com/bxcodec/gclean/delivery/http/article"}
 	mapImport["models"] = m
 	mapImport["time"] = t
 	mapImport["sql"] = ss
 	mapImport["repository"] = r
 	mapImport["article"] = a
 
-	dataSend := &DataGenerator{
+	dataSend := &models.DataGenerator{
 		ModelName: "Article",
 		Imports:   mapImport,
 	}

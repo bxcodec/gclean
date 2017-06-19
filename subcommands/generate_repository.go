@@ -7,9 +7,10 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig"
+	"github.com/bxcodec/gclean/subcommands/models"
 )
 
-func (s *Subs) generateRepository() {
+func (s *Subs) generateRepository(data *models.DataGenerator) {
 	temp, err := template.New("").Funcs(sprig.TxtFuncMap()).ParseFiles("template/repositoryInterface.tpl")
 
 	if err != nil {
@@ -22,23 +23,13 @@ func (s *Subs) generateRepository() {
 		os.MkdirAll(pathP, os.ModePerm)
 	}
 
-	t := &Import{Alias: "time", Path: "time"}
-	m := &Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
-	mapImport := make(map[string]*Import)
-	mapImport["models"] = m
-	mapImport["time"] = t
-
-	dataSend := &DataGenerator{
-		ModelName: "Article",
-		Imports:   mapImport,
-	}
-	f, err := os.Create(pathP + strings.ToLower(dataSend.ModelName) + "_repository.go")
+	f, err := os.Create(pathP + strings.ToLower(data.ModelName) + "_repository.go")
 	if err != nil {
 		fmt.Println("Erorr")
 	}
 
 	defer f.Close()
-	err = temp.ExecuteTemplate(f, "repositoryInterface.tpl", dataSend)
+	err = temp.ExecuteTemplate(f, "repositoryInterface.tpl", data)
 
 	if err != nil {
 		fmt.Println("ERROR ", err)

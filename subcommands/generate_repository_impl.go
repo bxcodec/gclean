@@ -7,6 +7,7 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig"
+	"github.com/bxcodec/gclean/subcommands/models"
 )
 
 func (s *Subs) generateRepositoryImpl(repoType string, modelName string) {
@@ -24,35 +25,35 @@ func (s *Subs) generateRepositoryImpl(repoType string, modelName string) {
 
 	k := 1
 
-	mapImport := make(map[string]*Import)
+	mapImport := make(map[string]models.Import)
 
-	m := &Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
-	t := &Import{Alias: "time", Path: "time"}
-	ss := &Import{Alias: "sql", Path: "database/sql"}
-	r := &Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
+	m := models.Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
+	t := models.Import{Alias: "time", Path: "time"}
+	ss := models.Import{Alias: "sql", Path: "database/sql"}
+	r := models.Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
 	mapImport["models"] = m
 	mapImport["time"] = t
 	mapImport["sql"] = ss
 	mapImport["repository"] = r
 
-	id := &Attribute{
+	id := &models.Attribute{
 		Name: "ID",
 		Type: "int64",
 	}
-	title := &Attribute{
+	title := &models.Attribute{
 		Name: "Title",
 		Type: "string",
 	}
-	content := &Attribute{
+	content := &models.Attribute{
 		Name: "Content",
 		Type: "string",
 	}
 
-	dataSend := &DataGenerator{
+	dataSend := &models.DataGenerator{
 		Type:       repoType,
 		ModelName:  "Article",
 		Imports:    mapImport,
-		Attributes: []Attribute{*id, *title, *content},
+		Attributes: []models.Attribute{*id, *title, *content},
 	}
 	f, err := os.Create(pathP + "sample" + strconv.Itoa(k) + ".go")
 	if err != nil {

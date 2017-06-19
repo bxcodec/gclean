@@ -1,50 +1,52 @@
 package subcommands
 
 import (
+	"database/sql"
 	"fmt"
-	"time"
 
 	"github.com/spf13/cobra"
+
+	"github.com/bxcodec/gclean/subcommands/models"
+	mysqlExc "github.com/bxcodec/gclean/subcommands/mysql"
 )
 
 type Subs struct {
 }
 
 func (s *Subs) generate(cmd *cobra.Command, args []string) {
-	dataList := make([]*DataGenerator, 0)
 
-	id := &Attribute{
-		Name: "ID",
-		Type: "int64",
-	}
-	title := &Attribute{
-		Name: "Title",
-		Type: "string",
-	}
-	content := &Attribute{
-		Name: "Content",
-		Type: "string",
+	dbHost := "127.0.0.1"
+	dbPort := "33060"
+	dbUser := "root"
+	dbPass := "password"
+	dbName := "article"
+	mysqlConfig := &models.MysqlConnection{
+		Host:     dbHost,
+		Port:     dbPort,
+		User:     dbUser,
+		Password: dbPass,
+		DBName:   dbName,
 	}
 
-	dataList = append(dataList, &DataGenerator{
-		ModelName:  "Article",
-		Attributes: []Attribute{*id, *title, *content},
-		TimeStamp:  time.Now(),
-	})
+	dbConn, err := sql.Open(`mysql`, mysqlConfig.Dsn())
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer dbConn.Close()
 
-	data, err := FetchSchema("article")
+	mysqlExtractor := mysqlExc.MysqlExtractor{DBCon: dbConn}
+
+	data, err := mysqlExtractor.FetchSchema("article")
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
-		// os.Exit(0)
 	}
-	models := ExtractModel(data)
+	models := mysqlExtractor.ExtractModel(data)
 	for _, v := range models {
 
 		s.generateModels(&v)
-
+		s.generateRepository(&v)
 	}
-	s.generateRepository()
 	s.generateRepositoryImpl("mysql", "article")
 	s.generateUsecaseTmp("article")
 	s.generateDelivery()
