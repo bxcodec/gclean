@@ -105,9 +105,10 @@ func ExtractModel(schemaList []*ColumnSchema) []ModelGenerator {
 		if last != schema.TableName {
 			model.Attributes = attrList
 			model.Imports = imports
+			modelList = append(modelList, model)
 
 			attrList = nil
-			modelList = append(modelList, model)
+			imports = make(map[string]*Import)
 
 			model.ModelName = schema.TableName
 			last = schema.TableName
@@ -149,6 +150,9 @@ func ExtractModel(schemaList []*ColumnSchema) []ModelGenerator {
 			model.ModelName = last
 			model.Attributes = attrList
 			modelList = append(modelList, model)
+			attrList = nil
+			imports = nil
+			last = ""
 		}
 	}
 	return modelList
