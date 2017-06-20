@@ -56,6 +56,9 @@ func (s *Subs) generate(cmd *cobra.Command, args []string) {
 		s.fixingImportsUsecase(&m[i])
 		s.generateUsecaseTmp(&m[i])
 
+		s.fixingImportDeliveryHandler(&m[i])
+		s.generateHandler(&m[i])
+
 		m[i] = s.fixingImportDelivery(m[i], mapImport)
 
 		// fmt.Println(" : ", v.Imports)
@@ -84,6 +87,30 @@ func (s *Subs) generate(cmd *cobra.Command, args []string) {
 
 }
 
+func (s *Subs) fixingImportDeliveryHandler(m *models.DataGenerator) {
+
+	mapImport := make(map[string]models.Import)
+
+	aliasModel := m.ModelName + "Ucase"
+	// mm := models.Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
+
+	// ss := models.Import{Alias: "sql", Path: "database/sql"}
+	// r := models.Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
+	a := models.Import{Alias: aliasModel, Path: "github.com/bxcodec/gclean/usecase/" + m.ModelName}
+	// mapImport["models"] = mm
+	// mapImport["time"] = t
+	// mapImport["sql"] = ss
+	// mapImport["repository"] = r
+	framework := models.Import{Alias: "echo", Path: "github.com/labstack/echo"}
+
+	mapImport["framework"] = framework
+
+	mapImport[m.ModelName+"usecase"] = a
+
+	m.Imports = mapImport
+
+}
+
 func (s *Subs) fixingImportDelivery(m models.DataGenerator, mapImport map[string]models.Import) models.DataGenerator {
 
 	aliasModel := m.ModelName + "Ucase"
@@ -97,7 +124,7 @@ func (s *Subs) fixingImportDelivery(m models.DataGenerator, mapImport map[string
 	// mapImport["time"] = t
 	// mapImport["sql"] = ss
 	// mapImport["repository"] = r
-	mapImport[m.ModelName] = a
+	mapImport[m.ModelName+"usecase"] = a
 	mapImport[m.ModelName+"handler"] = h
 
 	m.Imports = mapImport
