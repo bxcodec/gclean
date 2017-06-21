@@ -1,4 +1,4 @@
-package subcommands
+package generator
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig"
-	"github.com/bxcodec/gclean/subcommands/models"
+	"github.com/bxcodec/gclean/generator/models"
 	_ "github.com/go-sql-driver/mysql" //mysql driver
 	// "html/template"
 )

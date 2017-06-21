@@ -19,7 +19,7 @@ package {{.ModelName | lower }}
 {{- $framework := index .Imports "framework" -}}
 
 {{- $modelLower := .ModelName | lower -}}
-{{- $pkgModel := index .Imports  (lower ( nospace (cat $modelLower "usecase"))) -}}
+{{- $pkgModel := index .Imports  "usecase" -}}
 
 type {{ $modelCamelCase }}Handler struct {
 	{{ initials  $modelCamelCase  }}Usecase {{$pkgModel.Alias}}.{{$modelCamelCase}}Usecase

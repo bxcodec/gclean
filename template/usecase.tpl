@@ -20,10 +20,8 @@ import (
 {{- $Name := cat "*" $pkgIm.Alias "." $modelName  }}
 {{- $model :=$Name| nospace}}
 
+{{ $ucase := index .Imports "usecase" }}
 
-type {{.ModelName | camelcase }}Usecase interface {
-	Fetch(cursor string, num int64) ([]{{$model}}, string, error)
-}
 
 {{- $rS := cat .ModelName "Usecase" }}
 {{- $repoStruct:= $rS|nospace | lower}}
@@ -47,6 +45,6 @@ func (a *{{$repoStruct}}) Fetch(cursor string, num int64) ([]{{$model}}, string,
 	return listArticle, nextCursor, nil
 }
 
-func New{{$repoStruct}}(a repository.{{.ModelName | camelcase }}Repository) {{ .ModelName | camelcase }}Usecase {
+func New{{$repoStruct}}(a repository.{{.ModelName | camelcase }}Repository) {{ $ucase.Alias }}.{{ .ModelName | camelcase }}Usecase {
 	return &{{$repoStruct}}{a}
 }

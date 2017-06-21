@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/bxcodec/gclean/subcommands/models"
+	"github.com/bxcodec/gclean/generator/models"
 )
 
 type MysqlExtractor struct {

@@ -26,16 +26,16 @@ type HttpHandler struct {
 
 {{- $modelLower := $model.ModelName | lower -}}
 
-{{- $pkgModel := index $model.Imports  (lower ( nospace (cat $modelLower "usecase"))) -}}
+{{- $pkgModel := index $model.Imports  "usecase" -}}
 {{- $modelCamelCase := $model.ModelName | camelcase -}}
 
 
 
 {{- $handlerPkg := index $model.Imports (lower (nospace ( cat $model.ModelName "handler"))) }}
-
+// Init{{ $modelCamelCase }}HttpHandler Used for initializing the Handler for {{ $modelCamelCase }}
 func (h *HttpHandler) Init{{ $modelCamelCase }}Handler(u {{$pkgModel.Alias}}.{{$modelCamelCase}}Usecase) *HttpHandler {
-	{{$model.ModelName | lower }}_H := &{{$handlerPkg.Alias}}.{{$modelCamelCase}}Handler{  {{ (initials $modelCamelCase) }}Usecase: u}
-	h.E.GET(`/{{$model.ModelName | lower}}`, {{$model.ModelName | lower }}_H.Fetch{{ $modelCamelCase }})
+	{{$model.ModelName | lower }}H := &{{$handlerPkg.Alias}}.{{$modelCamelCase}}Handler{  {{ (initials $modelCamelCase) }}Usecase: u}
+	h.E.GET(`/{{$model.ModelName | lower}}`, {{$model.ModelName | lower }}H.Fetch{{ $modelCamelCase }})
 	return h
 }
 

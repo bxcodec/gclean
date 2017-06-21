@@ -1,4 +1,4 @@
-package subcommands
+package generator
 
 import (
 	"database/sql"
@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/bxcodec/gclean/subcommands/models"
-	mysqlExc "github.com/bxcodec/gclean/subcommands/mysql"
+	"github.com/bxcodec/gclean/generator/models"
+	mysqlExc "github.com/bxcodec/gclean/generator/mysql"
 )
 
 type Subs struct {
@@ -48,15 +48,27 @@ func (s *Subs) generate(cmd *cobra.Command, args []string) {
 		s.generateModels(&m[i])
 
 		s.fixingImportsRepo(&m[i])
+		fmt.Println("Generating ", m[i].ModelName, " Repository")
 		s.generateRepository(&m[i])
+		s.generateMocksRepository(&m[i])
 
 		s.fixingImportsRepoImpl(&m[i])
+
+		fmt.Println("Generating ", m[i].ModelName, " Repository Implement")
 		s.generateRepositoryImpl(&m[i])
 
+		fmt.Println("Generating ", m[i].ModelName, " Usecase ")
+		s.fixingImportsUsecaseInterface(&m[i])
+		s.generateUcaseInterface(&m[i])
+		s.generateMocksUsecase(&m[i])
+
 		s.fixingImportsUsecase(&m[i])
+		fmt.Println("Generating ", m[i].ModelName, " Usecase Implement")
 		s.generateUsecaseTmp(&m[i])
 
 		s.fixingImportDeliveryHandler(&m[i])
+
+		fmt.Println("Generating ", m[i].ModelName, " HttpHandler")
 		s.generateHandler(&m[i])
 
 		m[i] = s.fixingImportDelivery(m[i], mapImport)
@@ -71,6 +83,8 @@ func (s *Subs) generate(cmd *cobra.Command, args []string) {
 	delete(mapImport, "models")
 
 	dlv.Imports = mapImport
+
+	fmt.Println("Generating  All Http Handler Repository")
 	s.generateDelivery(dlv)
 
 }
@@ -79,13 +93,11 @@ func (s *Subs) fixingImportDeliveryHandler(m *models.DataGenerator) {
 
 	mapImport := make(map[string]models.Import)
 
-	aliasModel := m.ModelName + "Ucase"
-
-	a := models.Import{Alias: aliasModel, Path: "github.com/bxcodec/gclean/usecase/" + m.ModelName}
+	a := models.Import{Alias: "usecase", Path: "github.com/bxcodec/gclean/usecase"}
 	framework := models.Import{Alias: "echo", Path: "github.com/labstack/echo"}
 
 	mapImport["framework"] = framework
-	mapImport[m.ModelName+"usecase"] = a
+	mapImport["usecase"] = a
 
 	m.Imports = mapImport
 
@@ -93,14 +105,13 @@ func (s *Subs) fixingImportDeliveryHandler(m *models.DataGenerator) {
 
 func (s *Subs) fixingImportDelivery(m models.DataGenerator, mapImport map[string]models.Import) models.DataGenerator {
 
-	aliasModel := m.ModelName + "Ucase"
 	mm := models.Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
 
-	a := models.Import{Alias: aliasModel, Path: "github.com/bxcodec/gclean/usecase/" + m.ModelName}
+	a := models.Import{Alias: "usecase", Path: "github.com/bxcodec/gclean/usecase"}
 	h := models.Import{Alias: m.ModelName + "Handler", Path: "github.com/bxcodec/gclean/delivery/http/" + m.ModelName}
 
 	mapImport["models"] = mm
-	mapImport[m.ModelName+"usecase"] = a
+	mapImport["usecase"] = a
 	mapImport[m.ModelName+"handler"] = h
 
 	m.Imports = mapImport
@@ -139,6 +150,16 @@ func (s *Subs) fixingImportsUsecase(m *models.DataGenerator) {
 
 	r := models.Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
 	mapIp["repository"] = r
+	u := models.Import{Alias: "usecase", Path: "github.com/bxcodec/gclean/usecase"}
+	mapIp["usecase"] = u
+	m.Imports = mapIp
+
+}
+func (s *Subs) fixingImportsUsecaseInterface(m *models.DataGenerator) {
+	mapIp := make(map[string]models.Import)
+
+	model := models.Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
+	mapIp["models"] = model
 
 	m.Imports = mapIp
 

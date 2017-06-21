@@ -1,4 +1,4 @@
-package subcommands
+package generator
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 
 	"github.com/Masterminds/sprig"
 
-	"github.com/bxcodec/gclean/subcommands/models"
+	"github.com/bxcodec/gclean/generator/models"
 )
 
 func (s *Subs) generateDelivery(data *models.DeliveryGenerator) {
