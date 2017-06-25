@@ -35,3 +35,29 @@ func (s *Subs) generateUsecaseTest(data *models.DataGenerator) {
 		os.Exit(0)
 	}
 }
+func (s *Subs) generateDeliveryTest(data *models.DataGenerator) {
+	temp, err := template.New("").Funcs(sprig.TxtFuncMap()).ParseFiles("template/delivery_test.tpl")
+
+	if err != nil {
+		fmt.Println("GALGAL", err)
+		os.Exit(0)
+	}
+
+	pathP := "delivery/http/" + data.ModelName + "/"
+	if _, er := os.Stat(pathP); os.IsNotExist(er) {
+		os.MkdirAll(pathP, os.ModePerm)
+	}
+
+	f, err := os.Create(pathP + data.ModelName + "_usecase_test.go")
+	if err != nil {
+		fmt.Println("Erorr")
+	}
+
+	defer f.Close()
+	err = temp.ExecuteTemplate(f, "delivery_test.tpl", data)
+
+	if err != nil {
+		fmt.Println("ERROR ", err)
+		os.Exit(0)
+	}
+}

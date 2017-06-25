@@ -72,6 +72,8 @@ func (s *Subs) generate(cmd *cobra.Command, args []string) {
 
 		fmt.Println("Generating ", m[i].ModelName, " HttpHandler")
 		s.generateHandler(&m[i])
+		s.fixingImportDeliveryTest(&m[i])
+		s.generateDeliveryTest(&m[i])
 
 		m[i] = s.fixingImportDelivery(m[i], mapImport)
 
@@ -100,6 +102,25 @@ func (s *Subs) fixingImportDeliveryHandler(m *models.DataGenerator) {
 
 	mapImport["framework"] = framework
 	mapImport["usecase"] = a
+
+	m.Imports = mapImport
+
+}
+
+func (s *Subs) fixingImportDeliveryTest(m *models.DataGenerator) {
+
+	mapImport := make(map[string]models.Import)
+
+	mocks := models.Import{Alias: "mocks", Path: "github.com/bxcodec/gclean/usecase/mocks"}
+	framework := models.Import{Alias: "echo", Path: "github.com/labstack/echo"}
+
+	h := models.Import{Alias: "handler", Path: "github.com/bxcodec/gclean/delivery/http/" + m.ModelName}
+	model := models.Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
+
+	mapImport["framework"] = framework
+	mapImport["mocks"] = mocks
+	mapImport["models"] = model
+	mapImport["handler"] = h
 
 	m.Imports = mapImport
 
