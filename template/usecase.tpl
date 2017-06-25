@@ -27,7 +27,7 @@ import (
 {{- $repoStruct:= $rS|nospace | lower}}
 
 type {{$repoStruct}} struct {
-	{{.ModelName | lower}}Repos repository.{{.ModelName | camelcase }}Repository
+	        {{.ModelName | lower}}Repos repository.{{.ModelName | camelcase }}Repository
 }
 
 func (a *{{$repoStruct}}) Fetch(cursor string, num int64) ([]{{$model}}, string, error) {
@@ -45,6 +45,6 @@ func (a *{{$repoStruct}}) Fetch(cursor string, num int64) ([]{{$model}}, string,
 	return listArticle, nextCursor, nil
 }
 
-func New{{$repoStruct}}(a repository.{{.ModelName | camelcase }}Repository) {{ $ucase.Alias }}.{{ .ModelName | camelcase }}Usecase {
+func New{{ .ModelName | camelcase }}Usecase(a repository.{{.ModelName | camelcase }}Repository) {{ $ucase.Alias }}.{{ .ModelName | camelcase }}Usecase {
 	return &{{$repoStruct}}{a}
 }

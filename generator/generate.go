@@ -65,6 +65,8 @@ func (s *Subs) generate(cmd *cobra.Command, args []string) {
 		s.fixingImportsUsecase(&m[i])
 		fmt.Println("Generating ", m[i].ModelName, " Usecase Implement")
 		s.generateUsecaseTmp(&m[i])
+		s.fixingImportsUsecaseTest(&m[i])
+		s.generateUsecaseTest(&m[i])
 
 		s.fixingImportDeliveryHandler(&m[i])
 
@@ -139,6 +141,18 @@ func (s *Subs) fixingImportsRepoImpl(m *models.DataGenerator) {
 	r := models.Import{Alias: "repository", Path: "github.com/bxcodec/gclean/repository"}
 	mapIp["repository"] = r
 
+	m.Imports = mapIp
+
+}
+func (s *Subs) fixingImportsUsecaseTest(m *models.DataGenerator) {
+	mapIp := make(map[string]models.Import)
+
+	model := models.Import{Alias: "models", Path: "github.com/bxcodec/gclean/models"}
+	mocks := models.Import{Alias: "mocks", Path: "github.com/bxcodec/gclean/repository/mocks"}
+	u := models.Import{Alias: "usecase", Path: "github.com/bxcodec/gclean/usecase/" + m.ModelName}
+	mapIp["usecase"] = u
+	mapIp["models"] = model
+	mapIp["mocks"] = mocks
 	m.Imports = mapIp
 
 }
